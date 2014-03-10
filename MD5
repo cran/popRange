@@ -1,0 +1,14 @@
+b67e03bbee771c5e6ccc2706c3e96271 *DESCRIPTION
+64c325ae61c1618c49f837b1df995faf *LICENSE
+6a2cee50e6ff9c3922f6cec4aa0f64b8 *NAMESPACE
+e44f97dd0ff977e382064a96e90e4962 *R/sim_package.r
+635749bba7f42edf9c1f470c7c6acfe8 *inst/config.py
+eb2a9b4a964ad0598097af0c494e16fb *inst/config.pyc
+d374b43d99a6580f918dd2ce9fc8b200 *inst/popRange_main.py
+d016634a48b3ec8e11576ccbc7c40b17 *inst/popRange_main.pyc
+5f21f50cd7cc7b5ec4de532fd43b297e *inst/setup_program.py
+bc611c7412c39b64f2d968138a978838 *inst/setup_program.pyc
+b8421df3518372962a0e255af5cdfcfe *inst/writeOutput.py
+e5230fc55f41af0cd8fbb3c7a97718e7 *inst/writeOutput.pyc
+63fccc3adf4cbce333cded46938b5b30 *man/popRange-package.Rd
+8a2884b3999ca00b76be748fea94da68 *man/popRangeSim.Rd
