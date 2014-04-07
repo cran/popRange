@@ -2,8 +2,8 @@ Package: popRange
 Type: Package
 Title: popRange: A spatially and temporally explicit forward genetic
         simulator
-Version: 1.1
-Date: 2014-03-20
+Version: 1.1.1
+Date: 2014-04-07
 Author: Kimberly F. McManus
 Maintainer: Kimberly F. McManus <kfm@stanford.edu>
 Description: Runs a forward genetic simulator
@@ -12,7 +12,7 @@ LazyLoad: yes
 SystemRequirements: Python version >= 2.7, NumPy (Python scientific
         computing package)
 URL: http://stanford.edu/~kfm/html/research.html
-Packaged: 2014-03-20 22:52:18 UTC; kimberlymcmanus
+Packaged: 2014-04-07 16:33:46 UTC; kimberlymcmanus
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2014-03-21 01:29:44
+Date/Publication: 2014-04-07 20:15:36

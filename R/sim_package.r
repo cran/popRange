@@ -26,7 +26,7 @@ popRangeSim <- function(world, popSize, rMean = 0, rVar = 0, A=0, K=100, catProb
   
   if (is.null(sDiff) == FALSE){
     a = file.path(tempdir(), 'sDiff.txt')
-    input_call = paste(c(input_call, ' --sDiff ', a), collapse='')
+    input_call = paste(c(input_call, ' --sDiff "', a, '"'), collapse='')
     write.table(sDiff, a, quote=FALSE, col.names=FALSE, row.names=FALSE, sep=',')
   }
 
@@ -46,7 +46,7 @@ popRangeSim <- function(world, popSize, rMean = 0, rVar = 0, A=0, K=100, catProb
     }
     if (class(s) == "matrix"){
       a = file.path(tempdir(), 's.txt')
-      input_call = paste(input_call, '--s_mat', a)
+      input_call = paste(c(input_call, ' --s_mat "', a, '"'), collapse='')
       write.table(s, a, quote=FALSE, col.names=FALSE, row.names=FALSE, sep=',')
     }
     else if (class(s) == 'numeric') { 
@@ -66,7 +66,7 @@ popRangeSim <- function(world, popSize, rMean = 0, rVar = 0, A=0, K=100, catProb
   if (class(migration) == "numeric") { mig_input = paste("--mig_int", as.character(migration))}
   else if (class(migration) == "matrix") {
     a = file.path(tempdir(), 'mig.txt')
-    mig_input = paste("--mig_mat", a)
+    mig_input = paste(c('--mig_mat "', a, '"'), collapse='')
     write.table(migration, a, quote=FALSE, col.names=FALSE, row.names=FALSE, sep=",")
   }
   
@@ -74,7 +74,7 @@ popRangeSim <- function(world, popSize, rMean = 0, rVar = 0, A=0, K=100, catProb
   if (class(popSize) == "numeric"){ Ne_input = paste('-n', popSize) }
   else if (class(popSize) == "matrix") {
     a = file.path(tempdir(), 'ne.txt')
-    Ne_input = paste('-o', a) #Note this is Ne_Mat
+    Ne_input = paste(c('-o "', a, '"'), collapse='') #Note this is Ne_Mat
     write.table(popSize, a, quote=FALSE, col.names=FALSE, row.names=FALSE, sep=",")
   }
   else{ print("ERROR.  Ne must be either of class 'numeric' or 'matrix'") }
@@ -83,7 +83,7 @@ popRangeSim <- function(world, popSize, rMean = 0, rVar = 0, A=0, K=100, catProb
   if (class(rMean) == "numeric"){ rMean_input=paste('--rMean_int', rMean) }
   else if (class(rMean) == "matrix") {
     a = file.path(tempdir(), 'rMean.txt')
-    rMean_input = paste('--rMean_mat', a)
+    rMean_input = paste(c('--rMean_mat "', a, '"'), collapse='')
     write.table(rMean, a, quote=FALSE, col.names=FALSE, row.names=FALSE, sep=",")
   }
   else{ print("ERROR.  rMean must be either of class 'numeric' or 'matrix' ") }
@@ -91,7 +91,7 @@ popRangeSim <- function(world, popSize, rMean = 0, rVar = 0, A=0, K=100, catProb
   if (class(rVar) == "numeric"){ rVar_input=paste('--rVar_int', rVar) }
   else if (class(rVar) == "matrix") {
     a = file.path(tempdir(), 'rVar.txt')
-    rVar_input= paste('--rVar_mat', a)
+    rVar_input= paste(c('--rVar_mat "', a, '"'), collapse='')
     write.table(rVar, a, quote=FALSE, col.names=FALSE, row.names=FALSE, sep=",")
   }
   else{ print("ERROR.  rVar must be either of class 'numeric' or 'matrix' ") }
@@ -99,7 +99,7 @@ popRangeSim <- function(world, popSize, rMean = 0, rVar = 0, A=0, K=100, catProb
   if (class(A) == "numeric"){ A_input = paste('--A_int', A) }
   else if (class(A) == "matrix") {
       a = file.path(tempdir(), 'A.txt')
-      A_input = paste('--A_mat', a)
+      A_input = paste(c('--A_mat "', a, '"'), collapse='')
       write.table(A, a, quote=FALSE, col.names=FALSE, row.names=FALSE, sep=",")
   }
   else{ print("ERROR. A must be either of class 'numeric' or 'matrix' ")}
@@ -107,7 +107,7 @@ popRangeSim <- function(world, popSize, rMean = 0, rVar = 0, A=0, K=100, catProb
   if (class(K) == "numeric"){ K_input = paste('--K_int', K) }
   else if (class(K) == "matrix") {
     a = file.path(tempdir(), 'K.txt')
-    K_input = paste('--K_mat', a)
+    K_input = paste(c('--K_mat "', a, '"'), collapse='')
     write.table(K, a, quote=FALSE, col.names=FALSE, row.names=FALSE, sep=",")
   }
   else{ print("ERROR. K must be either of class 'numeric' or 'matrix' ") }
@@ -115,7 +115,7 @@ popRangeSim <- function(world, popSize, rMean = 0, rVar = 0, A=0, K=100, catProb
   if (class(catProb) == "numeric"){ catProb_input = paste('--catProb_int', catProb)}
   else if (class(catProb) == "matrix") {
     a = file.path(tempdir(), 'catProb.txt')
-    catProb_input = paste('--catProb_mat', a)
+    catProb_input = paste(c('--catProb_mat "', a, '"'), collapse='')
     write.table(catProb, a, quote=FALSE, col.names=FALSE, row.names=FALSE, sep=",")
   }
   else{ print("ERROR. catProb must be either of class 'numeric' or 'matrix' ")}
@@ -128,7 +128,8 @@ popRangeSim <- function(world, popSize, rMean = 0, rVar = 0, A=0, K=100, catProb
   #command <- paste("python FS_3.py ", world_input, Ne_input, rMean_input, rVar_input,
   #                 A_input, K_input, catProb_input, diploid_input, nGens_input, mig_input,
   #                 SNP_model_input, h_input, s_input, outfile_input, bb_input, recordTrag_input)
-  command <- paste("python", system.file("popRange_main.py", package = "popRange"), input_call, Ne_input, rMean_input, rVar_input,
+  fileLoc = paste(c('"', system.file("popRange_main.py", package="popRange"), '"'), collapse='')
+  command <- paste("python", fileLoc, input_call, Ne_input, rMean_input, rVar_input,
                    A_input, K_input, catProb_input, diploid_input, mig_input)
   #command <- paste("python popRange/inst/popRange_main.py", input_call, Ne_input, rMean_input, rVar_input,
   #                 A_input, K_input, catProb_input, diploid_input, mig_input)
