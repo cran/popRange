@@ -7,7 +7,7 @@ import popRange_main
 
 
 ##########################################
-##This is my initial set up of the world##
+##Initial set up of the world           ##
 ##########################################
 
 def setup():
@@ -69,8 +69,7 @@ def setup():
                 qq = np.arange(0, int(config.nSNPs) ).tolist()
                 lattice[x,y].snps.pos = list(qq)
     else:
-        print("ERROR: SNP model must be either 0 (snm) or 1 (fixed)")
-        sys.exit()
+        sys.exit("ERROR: SNP_model must be either 0 (snm) or 1 (fixed)")
     
     createAlleleHistory(lattice)
     return lattice
@@ -147,6 +146,8 @@ def setSNM (lattice):
         SNP_mat[i][0:AAAA[i]] = 1
     map(np.random.shuffle, SNP_mat) #This shuffles the values in each row separately
     SNP_mat = np.array(SNP_mat).transpose()
+    if (len(SNP_mat) == 0):
+        sys.exit("Error: This simulation can't start with 0 SNPs. Perhaps try a higher mutation rate.")
     return SNP_mat
 
 

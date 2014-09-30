@@ -51,7 +51,6 @@ def main():
 def sim(lattice):
     c = 0
     for i in range(0, config.nGens):
-        #   print 'Gen ', i
         lattice = cat(lattice, i) #Sees if a catastrophe happens
         if len(config.populations) > 1 and config.mig == True: #Migration if more than 1 population
             lattice = mig(lattice, i)
@@ -103,14 +102,14 @@ def isWorldStillAlive(lattice, gen):
         y = config.populations[j][1]
         if lattice[x,y].exists == True:
             return True
-
     return False
 
 ########################
 ## Extinct Population ##
 ########################
 
-#This method is ran in 2 scenarios: when a catastrophe occurs in the populations or when there becomes fewer than 4 haploid chromosomes
+#This method is ran in 2 scenarios: when a catastrophe occurs in the 
+#populations or when there becomes fewer than 4 haploid chromosomes
 
 def extinctPop(lattice, i, j, gen):
     lattice[i,j].exists = False #since the population no longer exists
@@ -234,10 +233,6 @@ def worldEnded():
 ##############################
 ## Founding new populations ##
 ##############################
-
-#THIS IS ALL MESSED UP RIGHT NOW
-#TO FIX THIS USE np.argwhere(x>1)
-##Is this still messed up?
 
 def foundPop(lattice, j, k, g, h, nmig, gen): #n diploids migrating from [j,k] to [g,h]..currently nmig always == 1
     lattice[g,h].exists = True
@@ -401,17 +396,14 @@ def growth(j,k,ne):
         rMean_toUse = config.rMean
     else:
         rMean_toUse = config.rMean[j][k]
-    
     if isinstance(config.rVar, (int, long, float, complex)):
         rVar_toUse = config.rVar
     else:
         rVar_toUse = config.rVar[j][k]
-    
     if isinstance(config.A, (int, long, float, complex)):
         A_toUse = config.A
     else:
-        A_toUse = config.A[j][k]
-    
+        A_toUse = config.A[j][k] 
     if isinstance(config.K, (int, long, float, complex)):
         K_toUse = config.K
     else:

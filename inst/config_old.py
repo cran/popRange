@@ -11,10 +11,10 @@ def readValues(argv):
     parser = argparse.ArgumentParser(description='These are all of the R parameters converted into Python parameters')
     #parser.add_argument('-n','--popSize_int', help='The population size parameter, if all populations have the same size', required=False)
     parser.add_argument('--popSize_int', help='The population size parameter, if all populations have the same size', required=False) #22 Sept 2014
-    parser.add_argument('--popSize_mat', help='The population size parameter, if population have different sizes', required=False)
-    parser.add_argument('--world', help='Starting population matrix. 1 means a population can exist there, -1 means it cannot.', required=True)
+    parser.add_argument('-o','--popSize_mat', help='The population size parameter, if population have different sizes', required=False)
+    parser.add_argument('-p', '--pops', help='Starting population matrix. 1 means a population can exist there, -1 means it cannot.', required=True)
     parser.add_argument('--rMean_mat', help='The mean r in the exponential growth equation, if the means are variable by population.', required=False)
-    parser.add_argument('--rMean_int', help='The mean r in the exponential growth equation, if all population means are the same', required=False)
+    parser.add_argument('--rMean_int', help='The mean r in the exponential growth equation, if all the means are the same', required=False)
     parser.add_argument('--rVar_mat', help='The variance in r in the exponential growth equation, if all the variances are different in different populations', required=False)
     parser.add_argument('--rVar_int', help='The variance in r in the exponential growth equation, if all the variances are the same', required=False)
     parser.add_argument('--K_int', help='The carry capacity of all populations', required=False)
@@ -25,21 +25,21 @@ def readValues(argv):
     parser.add_argument('--catProb_mat', help='Specific probabilities of each population going extinct in a generation', required=False)
     parser.add_argument('--diploid', help='True if simulating a diploid species, False if simulating a haploid species', required=True)
     parser.add_argument('--nGens', help='Number of generations to run simulation', required=True)
-    parser.add_argument('--migration_mat', help='Migration rate matrix', required=False)
-    parser.add_argument('--migration_int', help='Migration rate int', required=False)
-    parser.add_argument('--SNP_model', help='Either 0 (user provides starting SNP frequencies) or 1 (starting SNP frequencies determined via standard neutral model).', required=True)
-    parser.add_argument('--h', help='dominance coefficient', required=True)
-    parser.add_argument('--s_int', help='Selection coefficient', required=False)
-    parser.add_argument('--s_mat', help='Matrix for selection coefficients', required=False)
-    parser.add_argument('--gamma_alpha', help='alpha parameter of the gamma distribution for the distribution of fitness effects', required=False)
-    parser.add_argument('--gamma_beta', help='beta parameter of the gamma distribution for the distribution of fitness effects', required=False)
-    parser.add_argument('--gSize', help='Number of base pairs in the genome', required=False)
-    parser.add_argument('--mutRate', help='Mutation rate', required=False)
+    parser.add_argument('--mig_mat', help='Migration rate matrix', required=False)
+    parser.add_argument('--mig_int', help='Migration rate int', required=False)
+    parser.add_argument('--SNP_model_input', help='SNP_model_input', required=True)
+    parser.add_argument('--h_input', help='dominance coefficient', required=True)
+    parser.add_argument('--s_input', help='selection coefficient', required=False)
+    parser.add_argument('--s_mat', help='matrix for selection coefficients', required=False)
+    parser.add_argument('--gamma_alpha_input', help='gamma_alpha_input', required=False)
+    parser.add_argument('--gamma_beta_input', help='gamma_beta_input', required=False)
+    parser.add_argument('--gSize_input', help='Number of base pairs in the genome', required=False)
+    parser.add_argument('--mutRate_input', help='Mutation rate', required=False)
     parser.add_argument('--GENEPOP', help='GENEPOP', required=False)
     parser.add_argument('--GENELAND', help='GENELAND', required=False)
     parser.add_argument('--PLINK', help='PLINK', required=False)
     parser.add_argument('--outfile', help='outfile', required=True)
-    parser.add_argument('--nSNPs', help='Number of SNPs', required=False)
+    parser.add_argument('--nSNPs_input', help='Number of SNPs', required=False)
     parser.add_argument('--SNPs_starting_freq', help='Starting frequency of SNPs', required=False)
     parser.add_argument('--infile', help='infile from previous run', required=False)
     parser.add_argument('--recordTrag', help='Frequency of recording allele trajectories', required=True)
@@ -47,7 +47,7 @@ def readValues(argv):
     
     args = parser.parse_args()
     
-    mat = readFile(args.world, remove=True)
+    mat = readFile(args.pops, remove=True)
     makePopulations(mat, args.diploid)
     
     global recordTrag
@@ -66,9 +66,9 @@ def readValues(argv):
         readInputfile(args.infile)
     
     global SNP_model
-    SNP_model = int(args.SNP_model) #1='snm', 0='fixed'
+    SNP_model = int(args.SNP_model_input) #1='snm', 0='fixed'
     if SNP_model != 1 and SNP_model !=0:
-        print("SNP_model parameter must be 0 (fixed model) or 1 (standard neutral model)")
+        print("SNP MODEL MUST BE 0 or 1")
         sys.exit()
     
     global SNPs_starting_freq
@@ -76,18 +76,18 @@ def readValues(argv):
         SNPs_starting_freq= float(args.SNPs_starting_freq)
     
     global nSNPs
-    if args.nSNPs != None and args.infile == None:
-        nSNPs = int(args.nSNPs)
+    if args.nSNPs_input != None and args.infile == None:
+        nSNPs = int(args.nSNPs_input)
     
     global mutRate
-    if args.mutRate != None:
-        mutRate = float(args.mutRate)
+    if args.mutRate_input != None:
+        mutRate = float(args.mutRate_input)
     else:
         mutRate = None
 
     global gSize
-    if args.gSize != None:
-        gSize = int(float(args.gSize))
+    if args.gSize_input != None:
+        gSize = int(float(args.gSize_input))
     else:
         gSize = None
     
@@ -117,33 +117,33 @@ def readValues(argv):
     nGens = int(args.nGens)
     
     global h
-    h = float(args.h)
+    h = float(args.h_input)
 
     global s_mat, s, g_a, g_b
-    if args.s_int != None:
+    if args.s_input != None:
         s_mat = None
-        s = float(args.s_int)
+        s = float(args.s_input)
     elif args.s_mat != None:
         s_mat = readFile(args.s_mat, remove=True)
         s = None
     else:
-        g_a = float(args.gamma_alpha)
-        g_b = float(args.gamma_beta)
+        g_a = float(args.gamma_alpha_input)
+        g_b = float(args.gamma_beta_input)
         gSize = int(args.gSize)
         mutRate = float(args.mutRate)
 
     global migProb, mig #MIGRATION
-    if args.migration_mat != None:
-        migProb = readFile(args.migration_mat, remove=True)
+    if args.mig_mat != None:
+        migProb = readFile(args.mig_mat, remove=True)
         migProb = [map(float,x) for x in migProb]
         mig = True
     else:
-        if args.migration_int == 0:
+        if args.mig_int == 0:
             mig = False
             migProb = 0
         else:
             mig = True
-            migProb = float(args.migration_int)
+            migProb = float(args.mig_int)
 
     global Ne
     if args.popSize_mat != None:
@@ -210,7 +210,7 @@ def readFile( fileToRead, remove ):
     try:
         l = [ map(str , line.rstrip('\n').split(',')) for line in f ]
     except:
-        print('Problem with world matrix!')
+        print('Problem with pops CSV file!')
         sys.exit()
     finally:
         f.close()
@@ -235,7 +235,8 @@ def makePopulations(mat, isDip):
         elif int(mat[0][0]) == -1: #It is a barrier and cannot be entereddd #This doesn't make sense, take away this option
             pass
         else:
-            sys.exit("Error in world matrix values.  Must be 1 or -1")
+            print("Error in pop matrix values.  Must be 1 or -1")
+            sys.exit()
     else:
         for j in range(0,len(mat[0])): #for each COLUMN
             for i in range(0,len(mat)): #for each ROW
@@ -246,7 +247,8 @@ def makePopulations(mat, isDip):
                 elif int(mat[i][j]) == -1: #It is a barrier and cannot be entereddd
                     populations.append( (i,j) ) #basically I'm not using the -1 for anything
                 else:
-                    sys.exit("Error in world matrix values.  Must be 1 or -1")
+                    print("Error in pop matrix values.  Must be 1 or -1")
+                    sys.exit()
 
 def readInputfile(infile):
     global nSNPs, Ne, popSizes, populations, max_X, max_Y, inFile_YEP
@@ -256,7 +258,7 @@ def readInputfile(infile):
     try:
         l = [ map(str , line.rstrip('\n').split(',')) for line in f ]
     except:
-        print('Problem with the input file from the previous simulation run.')
+        print('Problem with pops CSV file!')
         sys.exit()
     finally:
         f.close()

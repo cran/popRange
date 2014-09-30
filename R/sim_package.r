@@ -4,19 +4,33 @@
 ## that simulates complex, stochastic demographic models
 ###################################
 
-popRangeSim <- function(world, popSize, rMean = 0, rVar = 0, A=0, K=100, catProb=0, 
-                          diploid=TRUE, nGens=100, migration=0, SNP_model = 1,
+popRangeSim <- function(world, popSize, rMean = 0, rVar = 0, A = 0, K = 100, catProb = 0, 
+                          diploid = TRUE, nGens = 100, migration = 0, SNP_model = 1,
                           h = 0.5, s = 0, gamma_alpha = NULL, gamma_beta = NULL,
                           gSize = NULL, mutRate = NULL, nSNPs = NULL, SNPs_starting_freq = NULL,
                           GENEPOP = FALSE, GENELAND = FALSE, PLINK = FALSE, 
                           outfile = "", infile=NULL, recordTrag = 0, sDiff=NULL) {
   
   options("scipen"=100, "digits"=4)
+
+  #Checking the input for errors
+  if (!(SNP_model %in% c(0,1))) {
+    print("SNP_model parameter must be either 0 (user inputs starting allele frequencies) 
+      or 1 (starting allele frequency determined from standard neutral model)")
+    stop()
+  }
   
+  if (is.null(nSNPs) & SNP_model == 0){
+    print("nSNPs must start with at least 1 SNP.")
+    stop() 
+  }
+
   a = file.path(tempdir(), 'world.txt')
   write.table(world, a, quote=FALSE, col.names=FALSE, row.names=FALSE, sep=",")
-  input_call = paste(c('-p ', a, ' --outfile ', outfile, ' --recordTrag ', recordTrag,
-                ' --SNP_model ', as.character(SNP_model), ' --h_input ', as.character(h),
+
+
+  input_call = paste(c('--world ', a, ' --outfile ', outfile, ' --recordTrag ', recordTrag,
+                ' --SNP_model ', as.character(SNP_model), ' --h ', as.character(h),
                 ' --nGens ', as.character(nGens)), collapse='')
                 #input_call = paste(c("-p world.txt --outfile ", outfile, ' --recordTrag ', recordTrag,
    #                    ' --SNP_model ', as.character(SNP_model), ' --h_input ', as.character(h),
@@ -41,7 +55,7 @@ popRangeSim <- function(world, popSize, rMean = 0, rVar = 0, A=0, K=100, catProb
 
   if ( is.null(gamma_alpha) & is.null(gamma_beta) ){ 
     if (is.null(nSNPs) == FALSE){
-      input_call = paste(input_call, '--nSNPs_input', as.character(nSNPs), '--SNPs_starting_freq', 
+      input_call = paste(input_call, '--nSNPs', as.character(nSNPs), '--SNPs_starting_freq', 
                          as.character(SNPs_starting_freq))
     }
     if (class(s) == "matrix"){
@@ -50,31 +64,31 @@ popRangeSim <- function(world, popSize, rMean = 0, rVar = 0, A=0, K=100, catProb
       write.table(s, a, quote=FALSE, col.names=FALSE, row.names=FALSE, sep=',')
     }
     else if (class(s) == 'numeric') { 
-      input_call = paste(input_call, '--s_input', as.character(s))
+      input_call = paste(input_call, '--s_int', as.character(s))
     }
   }
   else {
-    input_call = paste(input_call, "--gamma_alpha_input", as.character(gamma_alpha), 
-                     "--gamma_beta_input", as.character(gamma_beta))
+    input_call = paste(input_call, "--gamma_alpha", as.character(gamma_alpha), 
+                     "--gamma_beta", as.character(gamma_beta))
   }
  
   if (is.null(gSize) == FALSE){
-    input_call = paste(input_call, '--gSize_input', as.character(gSize), '--mutRate_input', as.character(mutRate))
+    input_call = paste(input_call, '--gSize', as.character(gSize), '--mutRate', as.character(mutRate))
   }
   
   #Migration
-  if (class(migration) == "numeric") { mig_input = paste("--mig_int", as.character(migration))}
+  if (class(migration) == "numeric") { mig_input = paste("--migration_int", as.character(migration))}
   else if (class(migration) == "matrix") {
     a = file.path(tempdir(), 'mig.txt')
-    mig_input = paste(c('--mig_mat "', a, '"'), collapse='')
+    mig_input = paste(c('--migration_mat "', a, '"'), collapse='')
     write.table(migration, a, quote=FALSE, col.names=FALSE, row.names=FALSE, sep=",")
   }
   
   #Ne
-  if (class(popSize) == "numeric"){ Ne_input = paste('-n', popSize) }
+  if (class(popSize) == "numeric"){ Ne_input = paste('--popSize_int', popSize) }
   else if (class(popSize) == "matrix") {
     a = file.path(tempdir(), 'ne.txt')
-    Ne_input = paste(c('-o "', a, '"'), collapse='') #Note this is Ne_Mat
+    Ne_input = paste(c('--popSize_mat "', a, '"'), collapse='') #Note this is Ne_Mat
     write.table(popSize, a, quote=FALSE, col.names=FALSE, row.names=FALSE, sep=",")
   }
   else{ print("ERROR.  Ne must be either of class 'numeric' or 'matrix'") }
@@ -129,9 +143,22 @@ popRangeSim <- function(world, popSize, rMean = 0, rVar = 0, A=0, K=100, catProb
   #                 A_input, K_input, catProb_input, diploid_input, nGens_input, mig_input,
   #                 SNP_model_input, h_input, s_input, outfile_input, bb_input, recordTrag_input)
   fileLoc = paste(c('"', system.file("popRange_main.py", package="popRange"), '"'), collapse='')
-  command <- paste("python", fileLoc, input_call, Ne_input, rMean_input, rVar_input,
+  #Trying out this new "findpython" command
+  #pythonAvailable = can_find_python_cmd(minimum_version="2.0", maximum_version="2.8") #Took this out b/c it takes kinda a long time to run
+  #if (pythonAvailable == FALSE){
+  #  return(print("Couldn't find a sufficient Python binary version 2.7. 
+  #    If you have but it isn't on the system path (as is default on Windows)
+  #    please add it to path or set options('python_cmd'='/path/to/binary')  or
+  #    set the PYTHON, PYTHON2, or PYTHON3 environmental variables."))
+  #}
+  #if (pythonAvailable == TRUE) {
+    pythonLoc = find_python_cmd(minimum_version="2.0", maximum_version="2.8", required_modules="numpy")
+    command <- paste(pythonLoc, fileLoc, input_call, Ne_input, rMean_input, rVar_input,
                    A_input, K_input, catProb_input, diploid_input, mig_input)
-  #command <- paste("python popRange/inst/popRange_main.py", input_call, Ne_input, rMean_input, rVar_input,
-  #                 A_input, K_input, catProb_input, diploid_input, mig_input)
-  system(command)
+    #command <- paste("python", fileLoc, input_call, Ne_input, rMean_input, rVar_input,
+    #               A_input, K_input, catProb_input, diploid_input, mig_input)
+    #command <- paste("python", fileLoc, input_call, Ne_input, rMean_input, rVar_input,
+    #                 A_input, K_input, catProb_input, diploid_input, mig_input)
+   # }
+    system(command)
 }

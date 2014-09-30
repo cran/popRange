@@ -14,33 +14,33 @@ PLINK = FALSE, outfile = "", infile = NULL, recordTrag = 0, sDiff = NULL)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{world}{
-This matrix grid defines the grid of populations.  Each point in the matrix defines a potential population.  A 1 indicates a population may exist at that point. -1 indicates no population can exist at that grid point.  This allows the user to define a population grid that is not rectangular. 
+This matrix grid defines the grid of populations.  Each point in the matrix defines a potential population.  A 1 indicates a population may exist at that point. -1 indicates no population can exist at that grid point.  This allows the user to define a population grid that is not rectangular.  This can be a data frame, a matrix, or an int. 
 }
   \item{popSize}{
-Starting population size.  If int, every existing population has the same size.  If matrix, each population size is defined separately.  Input must be an integer >= 0 or a matrix of integers >= 0.
+Starting population size.  If numeric, every existing population has the same size.  If matrix, each population size is defined separately.  Input must be an integer >= 0 or a matrix of integers >= 0.
 }
   \item{rMean}{
-Mean r (from exponential growth equation).  Float between c(0,1).  If int, all populations have the same r.  If matrix, each population has its own r.
+Mean r (from exponential growth equation).  Float between c(0,1).  If numeric, all populations have the same r.  If matrix, each population has its own r.
 }
   \item{rVar}{
-Variance in r.  Float between c(0,1). If int, all populations have the same variance.  If matrix, each population has its own r.  Set to 0 if you want r to be exactly rMean each generation.
+Variance in r.  Float between c(0,1). If numeric, all populations have the same variance.  If matrix, each population has its own r.  Set to 0 if you want r to be exactly rMean each generation.
 }
   \item{A}{
-Allee Effect. If int, all populations have same Allee effect.  If matrix, each population has its own Allee effect.  Set to 0 if you do not want to incorporate the Allee effect
+Allee Effect. If numeric, all populations have same Allee effect.  If matrix, each population has its own Allee effect.  Set to 0 if you do not want to incorporate the Allee effect
 }
   \item{K}{
 Carry capacity. If int, all populations have same carry capacity.  If matrix, each population has its own carrying capacity.
 }
   \item{catProb}{
 %%     ~~Describe \code{catProb} here~~
-Probability of population extinction each generation.  If a float, all populations have the same catProb. If matrix, each population has its own catProb.
+Probability of population extinction each generation (range:0-1).  If a numeric, all populations have the same catProb. If matrix, each population has its own catProb.
 
 }
   \item{diploid}{
 Ploidy of individuals.  Two options: haploid and diploid.  If TRUE, diploid.  If FALSE, haploid.
 }
   \item{nGens}{
-Number of generations for the simulations to run.
+Int, number of generations for the simulations to run.
 }
   \item{migration}{
 Probability of each individual migrating each generation.  If float, every population has same migration rate. Each migration randomly picks on adjacent viable grid point to migrate to (diagonals included). Alternatively, a matrix can be provided.  The first 2 columns are the coordinate of the initial population.  The next two columns are the coordinates of the final population.  The fifth column is the migration rate.  Population pairs not included are assumed to have no migration. 
@@ -52,16 +52,16 @@ There are two options. The first option (0) indicates that the user will provide
 Dominance parameter.  (Only relevant for diploids.)
 }
   \item{s}{
-If int, all SNPs have the same selection coefficient.  If matrix, first 2 columns define starting and ending SNP.  The 3rd column is the selection coefficient for those SNPs.
+If numeric, all SNPs have the same selection coefficient.  If matrix, first 2 columns define starting and ending SNP.  The 3rd column is the selection coefficient for those SNPs.
 }
   \item{gamma_alpha}{
-Alpha parameters to the gamma distribution.  NOTE: Provide EITHER an s input OR gamma_a,gamma_b values.  
+Alpha parameters to the gamma distribution.  NOTE: Provide EITHER an s input OR gamma_a, gamma_b values.  
 }
   \item{gamma_beta}{
-Beta parameters to the gamma distribution.  NOTE: Provide EITHER an s input OR gamma_a,gamma_b values.  
+Beta parameters to the gamma distribution.  NOTE: Provide EITHER an s input OR gamma_a, gamma_b values.  
 }
   \item{gSize}{
-Genome size. (Required if SNP_Model = 1)
+Number of base pairs in the genome. (Required if SNP_Model = 1)
 }
   \item{mutRate}{
 Mutation rate per generation per site. (Required if SNP_Model = 1)
@@ -70,7 +70,7 @@ Mutation rate per generation per site. (Required if SNP_Model = 1)
 Number of SNPs, if SNP_Model = 0.  (Required if SNP_Model = 0)
 }
   \item{SNPs_starting_freq}{
-The initial frequency of the SNPs.  If int, all SNPs are given the same starting frequencies.  If matrix, columns 1 and 2 indicate the first and last SNPs.  Column 3 indicates the allele frequency of these SNPs.  (Required if SNP_Model = 0)
+The initial frequency of the SNPs (range:0-1).  If int, all SNPs are given the same starting frequencies.  If matrix, columns 1 and 2 indicate the first and last SNPs.  Column 3 indicates the allele frequency of these SNPs.  (Required if SNP_Model = 0)
 }
   \item{GENEPOP}{
 If TRUE, write results to GENEPOP formatted file.
@@ -82,7 +82,7 @@ If TRUE, write results to GENELAND formatted file.
 If TRUE, write results to an PLINK formatted file
 }
   \item{outfile}{
-A string of the outfile names.
+A string of the outfile name.
 }
   \item{infile}{
 If you have already ran a simulation, you can use the results file as input.  This allows for temporally variable parameters and to output the state of the population at various time points.  

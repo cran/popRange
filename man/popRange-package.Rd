@@ -12,8 +12,8 @@ The R package is a wrapper for a python program that simulates stochastic, compl
 \tabular{ll}{
 Package: \tab popRange\cr
 Type: \tab Package\cr
-Version: \tab 1.1.1\cr
-Date: \tab 2014-04-06\cr
+Version: \tab 1.1.2\cr
+Date: \tab 2014-09-30\cr
 License: \tab MIT | share/LICENSE\cr
 }
 This R package consists of one main function, popRangeSim, which is a wrapper for the python code that simulates the populations.
