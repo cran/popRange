@@ -137,7 +137,7 @@ def readValues(argv):
     global migProb, mig #MIGRATION
     if args.migration_mat != None:
         migProb = readFile(args.migration_mat, remove=True)
-        migProb = [map(float,x) for x in migProb]
+        migProb = [list(map(float,x)) for x in migProb]
         mig = True
     else:
         if args.migration_int == 0:
@@ -150,7 +150,7 @@ def readValues(argv):
     global Ne
     if args.popSize_mat != None:
         Ne = readFile(args.popSize_mat, remove=True)
-        Ne = [map(int,x) for x in Ne]
+        Ne = [list(map(int,x)) for x in Ne]
         if args.diploid == "True":
             for ii in range(0,len(Ne)):
                 for jj in range(0,len(Ne[1])):
@@ -170,20 +170,20 @@ def readValues(argv):
     global catProb
     if args.catProb_mat != None:
         catProb = readFile(args.catProb_mat, remove=True)
-        catProb = [map(float,x) for x in catProb]
+        catProb = [list(map(float,x)) for x in catProb]
     elif args.catProb_int != None:
         catProb = int(args.catProb_int)
 
     global rMean, rVar
     if args.rMean_mat != None:
         rMean = readFile(args.rMean_mat, remove=True)
-        rMean = [map(float,x) for x in rMean]
+        rMean = [list(map(float,x)) for x in rMean]
     elif args.rMean_int != None:
         rMean = float(args.rMean_int)
     
     if args.rVar_mat != None:
         rVar = readFile(args.rVar_mat, remove=True)
-        rVar = [map(float,x) for x in rVar]
+        rVar = [list(map(float,x)) for x in rVar]
     
     elif args.rVar_int != None:
         rVar = float(args.rVar_int)
@@ -191,13 +191,13 @@ def readValues(argv):
     global A, K
     if args.A_mat != None:
         A = readFile(args.A_mat, remove=True)
-        A = [map(int,x) for x in A]
+        A = [list(map(int,x)) for x in A]
     elif args.A_int != None:
         A = int(args.A_int)
     
     if args.K_mat != None:
         K = readFile(args.K_mat, remove=True)
-        K = [map(int,x) for x in K]
+        K = [list(map(int,x)) for x in K]
     elif args.K_int != None:
         K = int(args.K_int)
     
@@ -210,7 +210,7 @@ def readValues(argv):
 def readFile( fileToRead, remove ):
     f = open( fileToRead, 'r')
     try:
-        l = [ map(str , line.rstrip('\n').split(',')) for line in f ]
+        l = [ list(map(str , line.rstrip('\n').split(','))) for line in f ]
     except:
         print('Problem with world matrix!')
         sys.exit()
@@ -256,7 +256,7 @@ def readInputfile(infile):
     
     f = open( infile, 'r')
     try:
-        l = [ map(str , line.rstrip('\n').split(',')) for line in f ]
+        l = [ list(map(str , line.rstrip('\n').split(','))) for line in f ]
     except:
         print('Problem with the input file from the previous simulation run.')
         sys.exit()

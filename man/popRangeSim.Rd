@@ -7,7 +7,7 @@ This method calls a python program that simulates stochastic demographic events 
 \usage{
 popRangeSim(world, popSize, rMean = 0, rVar = 0, A = 0, K = 100, catProb = 0, 
 diploid = TRUE, nGens = 100, migration = 0, SNP_model = 1, h = 0.5, s = 0, 
-gamma_alpha = NULL, gamma_beta = NULL, gSize = NULL, mutRate = NULL, 
+gamma_shape = NULL, gamma_scale = NULL, gSize = NULL, mutRate = NULL, 
 nSNPs = NULL, SNPs_starting_freq = NULL, GENEPOP = FALSE, GENELAND = FALSE, 
 PLINK = FALSE, outfile = "", infile = NULL, recordTrag = 0, sDiff = NULL)
 }
@@ -54,10 +54,10 @@ Dominance parameter.  (Only relevant for diploids.)
   \item{s}{
 If numeric, all SNPs have the same selection coefficient.  If matrix, first 2 columns define starting and ending SNP.  The 3rd column is the selection coefficient for those SNPs.
 }
-  \item{gamma_alpha}{
+  \item{gamma_shape}{
 Alpha parameters to the gamma distribution.  NOTE: Provide EITHER an s input OR gamma_a, gamma_b values.  
 }
-  \item{gamma_beta}{
+  \item{gamma_scale}{
 Beta parameters to the gamma distribution.  NOTE: Provide EITHER an s input OR gamma_a, gamma_b values.  
 }
   \item{gSize}{

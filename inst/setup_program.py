@@ -161,6 +161,10 @@ def startingSel(pop): #This I am using if the SNPs are a following a gamma distr
             pop.snps.sel[(int(line[0])-1):int(line[1])] = [float(line[2])] * (int(line[1]) - int(line[0]) + 1)  #This is the number of snps. 1 based. includes both #s.
     else:
         pop.snps.sel = np.random.gamma( shape = config.g_a, scale = config.g_b, size=len(pop.snps.freq))
+        aa = np.where(pop.snps.sel > 1) #restrict s to 0-1
+        pop.snps.sel[aa] = 1
+        bb = np.where(pop.snps.sel < 0)
+        pop.snps.sel[bb] = 0
     return pop.snps.sel
 
 

@@ -6,14 +6,14 @@
 popRange: A spatially and temporally explicit forward genetic simulator
 }
 \description{
-The R package is a wrapper for a python program that simulates stochastic, complex demographic models.
+The R package is a wrapper for a python program that simulates stochastic, complex population genetic models.
 }
 \details{
 \tabular{ll}{
 Package: \tab popRange\cr
 Type: \tab Package\cr
-Version: \tab 1.1.2\cr
-Date: \tab 2014-09-30\cr
+Version: \tab 1.1.3\cr
+Date: \tab 2014-10-08\cr
 License: \tab MIT | share/LICENSE\cr
 }
 This R package consists of one main function, popRangeSim, which is a wrapper for the python code that simulates the populations.

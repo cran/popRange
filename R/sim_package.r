@@ -6,7 +6,7 @@
 
 popRangeSim <- function(world, popSize, rMean = 0, rVar = 0, A = 0, K = 100, catProb = 0, 
                           diploid = TRUE, nGens = 100, migration = 0, SNP_model = 1,
-                          h = 0.5, s = 0, gamma_alpha = NULL, gamma_beta = NULL,
+                          h = 0.5, s = 0, gamma_shape = NULL, gamma_scale = NULL,
                           gSize = NULL, mutRate = NULL, nSNPs = NULL, SNPs_starting_freq = NULL,
                           GENEPOP = FALSE, GENELAND = FALSE, PLINK = FALSE, 
                           outfile = "", infile=NULL, recordTrag = 0, sDiff=NULL) {
@@ -53,7 +53,7 @@ popRangeSim <- function(world, popSize, rMean = 0, rVar = 0, A = 0, K = 100, cat
   if (PLINK == TRUE) { input_call = paste(input_call, '--PLINK', 'TRUE') }
   else { outfile_input = paste(input_call, '--PLINK', 'FALSE') }
 
-  if ( is.null(gamma_alpha) & is.null(gamma_beta) ){ 
+  if ( is.null(gamma_shape) & is.null(gamma_scale) ){ 
     if (is.null(nSNPs) == FALSE){
       input_call = paste(input_call, '--nSNPs', as.character(nSNPs), '--SNPs_starting_freq', 
                          as.character(SNPs_starting_freq))
@@ -68,8 +68,8 @@ popRangeSim <- function(world, popSize, rMean = 0, rVar = 0, A = 0, K = 100, cat
     }
   }
   else {
-    input_call = paste(input_call, "--gamma_alpha", as.character(gamma_alpha), 
-                     "--gamma_beta", as.character(gamma_beta))
+    input_call = paste(input_call, "--gamma_shape", as.character(gamma_shape), 
+                     "--gamma_scale", as.character(gamma_scale))
   }
  
   if (is.null(gSize) == FALSE){
@@ -142,19 +142,33 @@ popRangeSim <- function(world, popSize, rMean = 0, rVar = 0, A = 0, K = 100, cat
   #command <- paste("python FS_3.py ", world_input, Ne_input, rMean_input, rVar_input,
   #                 A_input, K_input, catProb_input, diploid_input, nGens_input, mig_input,
   #                 SNP_model_input, h_input, s_input, outfile_input, bb_input, recordTrag_input)
-  fileLoc = paste(c('"', system.file("popRange_main.py", package="popRange"), '"'), collapse='')
+  #fileLoc = paste(c('"', system.file("popRange_main.py", package="popRange"), '"'), collapse='')
   #Trying out this new "findpython" command
-  #pythonAvailable = can_find_python_cmd(minimum_version="2.0", maximum_version="2.8") #Took this out b/c it takes kinda a long time to run
-  #if (pythonAvailable == FALSE){
-  #  return(print("Couldn't find a sufficient Python binary version 2.7. 
-  #    If you have but it isn't on the system path (as is default on Windows)
-  #    please add it to path or set options('python_cmd'='/path/to/binary')  or
-  #    set the PYTHON, PYTHON2, or PYTHON3 environmental variables."))
-  #}
-  #if (pythonAvailable == TRUE) {
-    pythonLoc = find_python_cmd(minimum_version="2.0", maximum_version="2.8", required_modules="numpy")
-    command <- paste(pythonLoc, fileLoc, input_call, Ne_input, rMean_input, rVar_input,
-                   A_input, K_input, catProb_input, diploid_input, mig_input)
+  python2_Available = can_find_python_cmd(minimum_version="2.7", maximum_version="3.4", required_modules="numpy") #Took this out b/c it takes kinda a long time to run
+  
+  if (python2_Available == TRUE){
+    python2_loc = find_python_cmd(minimum_version="2.7", maximum_version="3.4", required_modules="numpy")
+    fileLoc = paste(c('"', system.file("popRange_main.py", package="popRange"), '"'), collapse='')
+    command <- paste(python2_loc, fileLoc, input_call, Ne_input, rMean_input, rVar_input,
+              A_input, K_input, catProb_input, diploid_input, mig_input)
+  }
+
+  else {
+    print("Could not find an acceptable version of python with numpy installed. This should be able to locate python 
+      anywhere on your computer, but perhaps try adding python to your PATH if you think this message is an error.")
+    stop() 
+    #pythonLoc = find_python_cmd(minimum_version="3.2", maximum_version="3.4", required_modules="numpy", 
+    #  error_message="Neither Python 2.7.x with numpy nor Python 3.2-3.4 with numpy could be found on your system."))
+    #fileLoc = paste(c('"', system.file("popRange_main_3.py", package="popRange"), '"'), collapse='')
+    #command <- paste(pythonLoc, fileLoc, input_call, Ne_input, rMean_input, rVar_input,
+    #          A_input, K_input, catProb_input, diploid_input, mig_input)
+
+  }
+  ##pythonLoc = find_python_cmd(minimum_version="2.7", maximum_version="2.7", required_modules="numpy")
+  #fileLoc = paste(c('"', system.file("popRange_main.py", package="popRange"), '"'), collapse='')
+  #command <- paste(pythonLoc, fileLoc, input_call, Ne_input, rMean_input, rVar_input,
+  #            A_input, K_input, catProb_input, diploid_input, mig_input)
+
     #command <- paste("python", fileLoc, input_call, Ne_input, rMean_input, rVar_input,
     #               A_input, K_input, catProb_input, diploid_input, mig_input)
     #command <- paste("python", fileLoc, input_call, Ne_input, rMean_input, rVar_input,
